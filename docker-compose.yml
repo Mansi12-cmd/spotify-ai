@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: spotify_postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: spotify_memory
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U postgres -d spotify_memory",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: spotify_api
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+
+    container_name: spotify_frontend
+    restart: unless-stopped
+
+    ports:
+      - "8501:8501"
+
+    depends_on:
+      api:
+        condition: service_started
+
+    environment:
+      BACKEND_URL: http://api:8000
+
+
+volumes:
+  postgres_data:

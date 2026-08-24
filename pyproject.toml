@@ -1,0 +1,20 @@
+[project]
+name = "spotify-final"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "asyncpg>=0.31.0",
+    "fastapi>=0.141.1",
+    "fastembed>=0.8.0",
+    "groq>=1.6.0",
+    "httpx>=0.28.1",
+    "pgvector>=0.5.0",
+    "pydantic-settings>=2.15.0",
+    "python-dotenv>=1.2.3",
+    "requests>=2.34.2",
+    "sqlalchemy>=2.0.52",
+    "streamlit>=1.62.0",
+    "uvicorn[standard]>=0.52.4",
+]
